@@ -12,7 +12,7 @@ router.use(authenticateToken);
  * @swagger
  * /student/grade:
  *  get:
- *       summary: Register a new user
+ *       summary: get my grade(student)
  *       responses:
  *           200:
  *               description: User registered successfully
@@ -25,7 +25,7 @@ router.route("/student/grade").get(getStudentGrade);
  * @swagger
  * /student/averageGrade:
  *  get:
- *       summary: Register a new user
+ *       summary: get my average grade(student)
  *       responses:
  *           200:
  *               description: User registered successfully

@@ -12,7 +12,7 @@ router.use(auth_js_1.default);
  * @swagger
  * /student/grade:
  *  get:
- *       summary: Register a new user
+ *       summary: get my grade(student)
  *       responses:
  *           200:
  *               description: User registered successfully
@@ -24,7 +24,7 @@ router.route("/student/grade").get(studentController_js_1.getStudentGrade);
  * @swagger
  * /student/averageGrade:
  *  get:
- *       summary: Register a new user
+ *       summary: get my average grade(student)
  *       responses:
  *           200:
  *               description: User registered successfully

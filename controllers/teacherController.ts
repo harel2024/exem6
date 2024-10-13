@@ -1,8 +1,8 @@
 import userModel from "../models/userModel.js";
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken"; 
 import dotenv from "dotenv";
-import { IUser } from '../models/userModel.js'; 
+import classModel from "../models/classModel.js";
+
 import { UserRequest } from '../middleware/auth.js'; 
 
 dotenv.config();
@@ -11,32 +11,21 @@ dotenv.config();
 //הבאת כל הציונים של המשתמשים
 export const getAllGrades = async (req: UserRequest, res: Response): Promise<void> => {
     try {
+        const teacher = req.user!;
         // בדיקה אם המשתמש הוא מורה
         if (req.user?.role !== "teacher") {
-            res.status(403).json({ message: "Forbidden: Only teachers can access this resource." });
+            res.status(403).json({ message: "erorr: Only teachers can access this page." });
             return;
         }
+        //מסנן רק את התלמידים שבאותה כיתה
+        const teacherClass = await classModel.findById(teacher.classId).populate("students");
+        //יביא רק את הסטודנטים
+        const students = await userModel.find({ role: "student" });
+        res.status(200).json(students );
 
-        // שימוש ב-aggregate לשליפת שמות התלמידים והציונים שלהם
-        const studentsWithGrades = await userModel.aggregate([
-            {
-                $match: { role: "student" }  // מסנן רק את המשתמשים שהם תלמידים
-            },
-            {
-                $project: {
-                    _id: 0,        // לא להציג את השדה _id
-                    name: 1,       // להציג את שם התלמיד
-                    grades: 1      // להציג את הציונים של התלמיד
-                }
-            }
-        ]);
+        
+      
 
-        if (!studentsWithGrades || studentsWithGrades.length === 0) {
-            res.status(404).json({ message: "No students found" });
-            return;
-        }
-
-        res.status(200).json(studentsWithGrades);
     } catch (error) {
         res.status(500).json({ message: "Error getting grades" });
     }
@@ -98,14 +87,14 @@ export const addGrade = async (req: UserRequest, res: Response): Promise<void> =
         }
 
         // הוספת ציון לתלמיד
-       const {password,subject, score } = req.body;
+       const {studentId,subject, score,comment } = req.body;
      
-       if(!password || !score|| !subject) {
-        res.status(400).json({ message: 'Missing passportId or grade' });
+       if(!studentId || !score|| !subject) {
+        res.status(400).json({ message: 'Missing student Id or grade' });
         return;
        }
 
-       const updateGrade = await userModel.findOneAndUpdate({ password: password }, { $push: { grades: {subject: subject, score: score } } }, { new: true });
+       const updateGrade = await userModel.findOneAndUpdate({ studentId: studentId }, { $push: { grades: {subject: subject, score: score ,Comment: comment} } }, { new: true });
 
        if (!updateGrade) {
         res.status(404).json({ message: 'User not found' });
@@ -119,7 +108,7 @@ export const addGrade = async (req: UserRequest, res: Response): Promise<void> =
 }
 
 
-// //מחיקת ציון לתלמיד
+
 // export const deleteGrade = async (req: UserRequest, res: Response): Promise<void> => {
 //     try {
 //         // בדיקה אם המשתמש הוא מורה

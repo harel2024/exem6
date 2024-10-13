@@ -15,34 +15,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllUsers = exports.updateGrade = exports.addGrade = exports.getAverageAll = exports.getAllGrades = void 0;
 const userModel_js_1 = __importDefault(require("../models/userModel.js"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const classModel_js_1 = __importDefault(require("../models/classModel.js"));
 dotenv_1.default.config();
 //הבאת כל הציונים של המשתמשים
 const getAllGrades = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
+        const teacher = req.user;
         // בדיקה אם המשתמש הוא מורה
         if (((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) !== "teacher") {
-            res.status(403).json({ message: "Forbidden: Only teachers can access this resource." });
+            res.status(403).json({ message: "erorr: Only teachers can access this page." });
             return;
         }
-        // שימוש ב-aggregate לשליפת שמות התלמידים והציונים שלהם
-        const studentsWithGrades = yield userModel_js_1.default.aggregate([
-            {
-                $match: { role: "student" } // מסנן רק את המשתמשים שהם תלמידים
-            },
-            {
-                $project: {
-                    _id: 0, // לא להציג את השדה _id
-                    name: 1, // להציג את שם התלמיד
-                    grades: 1 // להציג את הציונים של התלמיד
-                }
-            }
-        ]);
-        if (!studentsWithGrades || studentsWithGrades.length === 0) {
-            res.status(404).json({ message: "No students found" });
-            return;
-        }
-        res.status(200).json(studentsWithGrades);
+        //מסנן רק את התלמידים שבאותה כיתה
+        const teacherClass = yield classModel_js_1.default.findById(teacher.classId).populate("students");
+        //יביא רק את הסטודנטים
+        const students = yield userModel_js_1.default.find({ role: "student" });
+        res.status(200).json(students);
     }
     catch (error) {
         res.status(500).json({ message: "Error getting grades" });
@@ -100,12 +89,12 @@ const addGrade = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             return;
         }
         // הוספת ציון לתלמיד
-        const { password, subject, score } = req.body;
-        if (!password || !score || !subject) {
-            res.status(400).json({ message: 'Missing passportId or grade' });
+        const { studentId, subject, score, comment } = req.body;
+        if (!studentId || !score || !subject) {
+            res.status(400).json({ message: 'Missing student Id or grade' });
             return;
         }
-        const updateGrade = yield userModel_js_1.default.findOneAndUpdate({ password: password }, { $push: { grades: { subject: subject, score: score } } }, { new: true });
+        const updateGrade = yield userModel_js_1.default.findOneAndUpdate({ studentId: studentId }, { $push: { grades: { subject: subject, score: score, Comment: comment } } }, { new: true });
         if (!updateGrade) {
             res.status(404).json({ message: 'User not found' });
             return;
@@ -117,7 +106,6 @@ const addGrade = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.addGrade = addGrade;
-// //מחיקת ציון לתלמיד
 // export const deleteGrade = async (req: UserRequest, res: Response): Promise<void> => {
 //     try {
 //         // בדיקה אם המשתמש הוא מורה

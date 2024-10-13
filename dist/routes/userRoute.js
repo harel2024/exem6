@@ -10,7 +10,7 @@ const router = express_1.default.Router();
  * @swagger
  * /register:
  *  post:
- *      summary: Create a new user
+ *      summary: Create a new teacher or student
  *      requestBody:
  *          required: true
  *          content:
@@ -20,7 +20,7 @@ const router = express_1.default.Router();
  *                      properties:
  *                          name:
  *                              type: string
- *                          passportId:
+ *                          email:
  *                              type: string
  *                          password:
  *                              type: string
@@ -28,11 +28,15 @@ const router = express_1.default.Router();
  *                              type: string
  *                              enum: [teacher, student]
  *                              default: student
+ *                          className:
+ *                              type: string
+ *
  *          example:
  *              name: "name"
- *              passportId: "123456789"
+ *              email: "123456789"
  *              password: "12345678"
  *              role: "student"
+ *              className: "class name"
  *      responses:
  *          200:
  *              description: User created successfully
@@ -42,7 +46,7 @@ router.route("/register").post(userController_js_1.createUser);
  * @swagger
  * /login:
  *  post:
- *      summary: Login a user
+ *      summary: Login a teacher or student
  *      requestBody:
  *          required: true
  *          content:
@@ -50,9 +54,9 @@ router.route("/register").post(userController_js_1.createUser);
  *                  schema:
  *                      type: object
  *                      properties:
- *                          passportId:
- *                              type: string
  *                          password:
+ *                              type: string
+ *                          email:
  *                              type: string
  *      responses:
  *          200:

@@ -16,7 +16,7 @@ const swaggerDefinition = {
 
 const options = {
     definition: swaggerDefinition, // השתמש ב-definition במקום swaggerDefinitions
-    apis: ["./routes/*.js", "./server.js"],
+    apis: ["./dist/routes/*.js", "./server.js"],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

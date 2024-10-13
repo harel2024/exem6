@@ -18,7 +18,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const classModel_js_1 = __importDefault(require("../models/classModel.js"));
 dotenv_1.default.config();
-// יצירת יוזר חדש
+// יצירת יוזר חדש(רגיסטר)
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.body;
@@ -31,6 +31,8 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             const newUser = yield userModel_js_1.default.create(user);
             newUser.classId = myClass._id;
             myClass.students.push(newUser._id);
+            myClass.save();
+            res.status(201).json(newUser._id);
         }
         else {
             if (myClass) {
@@ -40,6 +42,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             const newUser = yield userModel_js_1.default.create(user);
             const newClass = yield classModel_js_1.default.create({ name: user.className });
             newUser.classId = newClass._id;
+            newUser.save();
             res.status(201).json(newClass._id);
         }
     }
