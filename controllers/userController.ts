@@ -2,15 +2,11 @@ import userModel from "../models/userModel.js";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken"; 
 import dotenv from "dotenv";
-import { IUser } from '../models/userModel.js'; 
-import { UserRequest } from '../middleware/auth.js';
 import classMode from "../models/classModel.js";
 import { ObjectId } from "mongoose";
 
 
 dotenv.config(); 
-
-
 
 
 
@@ -54,16 +50,6 @@ export const createUser = async (req: Request, res: Response) => {
         res.status(409).json({ message: error.message });
     }
 }
-           
-            
-          
-     
-
-           
-             
-          
-        
-   
 
 
 // לוגין של יוזר
@@ -96,6 +82,18 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         res.status(500).json({ message: "Error logging in" });
     }
 }
+           
+            
+          
+     
+
+           
+             
+          
+        
+   
+
+
 
 
 

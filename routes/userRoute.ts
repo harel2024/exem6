@@ -1,6 +1,6 @@
 import express from "express";
 import { createUser, login } from "../controllers/userController.js";
-import authenticateToken from "../middleware/auth.js"; 
+
 
 const router = express.Router();
 
@@ -39,7 +39,7 @@ const router = express.Router();
  *          200:
  *              description: User created successfully      
  */
-router.route("/register").post(createUser);
+router.route("/register").post(createUser);//הרשמה למערכת
 
 
 
@@ -59,6 +59,7 @@ router.route("/register").post(createUser);
  *                              type: string
  *                          email:
  *                              type: string
+ * 
  *      responses:
  *          200:
  *              description: User logged in successfully
@@ -66,7 +67,7 @@ router.route("/register").post(createUser);
  *              description: Bad request
  * 
  */
-router.route("/login").post(login);
+router.route("/login").post(login);//התחברות
 
 
 

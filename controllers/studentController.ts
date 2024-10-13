@@ -1,21 +1,19 @@
 import userModel from "../models/userModel.js";
-import { Request, Response } from "express";
-import jwt from "jsonwebtoken"; 
+import {  Response } from "express";
 import dotenv from "dotenv";
-import { IUser } from '../models/userModel.js'; 
 import { UserRequest } from '../middleware/auth.js'; 
 
 dotenv.config();
 
 
 
-// מחזיר את הציון של המשתמש
+// מחזיר את הציון של התלמיד
 export const getStudentGrade = async (req: UserRequest, res: Response): Promise<void> => {
     try {
-        // מחפש את המשתמש על פי תעודת הזהות (passportId)
+        // מחפש את המשתמת 
         const user = await userModel.findOne({ password: req.user?.password });
 
-        // אם לא נמצא משתמש
+        // אם לא נמצא תלמיד
         if (!user) {
             res.status(404).json({ message: 'User not found' });
             return;
@@ -40,10 +38,10 @@ export const getStudentGrade = async (req: UserRequest, res: Response): Promise<
 // מחשב את ממוצע הציונים של המשתמש
 export const getStudentsAverageGrade = async (req: UserRequest, res: Response): Promise<void> => {
     try {
-        // מחפש את המשתמש על פי תעודת הזהות (passportId)
+       
         const user = await userModel.findOne({ password: req.user?.password });
 
-        // אם לא נמצא משתמש
+       
         if (!user) {
             res.status(404).json({ message: 'User not found' });
             return;
@@ -55,7 +53,7 @@ export const getStudentsAverageGrade = async (req: UserRequest, res: Response): 
             return;
         }
 
-        // מחשב את ממוצע הציונים של המשתמש באמצעות השדה 'score'
+        // מחשב את ממוצע הציונים של המשתמש לפי הסקור  
         const averageGrade = user.grades.reduce((sum, gradeObject) => sum + gradeObject.score, 0) / user.grades.length;
 
         res.status(200).json({ averageGrade });

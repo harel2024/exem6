@@ -105,6 +105,6 @@ router.route("/teacher/addGrade").post(teacherController_js_1.addGrade);
  *           200:
  *               description: User registered successfully
  */
-router.route("/teacher/updateGrade").post(teacherController_js_1.updateGrade); //צריך בדיקה
+router.route("/teacher/updateGrade").post(teacherController_js_1.updateGrade);
 // router.route("/teacher/deleteGrade").post(deleteGrade);//צריך בדיקה
 exports.default = router;

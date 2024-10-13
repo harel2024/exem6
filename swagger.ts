@@ -15,7 +15,7 @@ const swaggerDefinition = {
 };
 
 const options = {
-    definition: swaggerDefinition, // השתמש ב-definition במקום swaggerDefinitions
+    definition: swaggerDefinition, 
     apis: ["./dist/routes/*.js", "./server.js"],
 };
 

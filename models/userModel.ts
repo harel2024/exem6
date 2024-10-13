@@ -34,6 +34,7 @@ const userSchema: Schema = new mongoose.Schema({
         unique: true,
         match : [/^[0-8]{8}$/, "password must be 8 digits"],
     },
+
     grades: {
         type: [{
             subject: {
@@ -55,6 +56,10 @@ const userSchema: Schema = new mongoose.Schema({
         type: String,
         enum: ["teacher", "student"],
         required: true, 
+    },
+    className: {
+        type: String,
+        required: true,
     },
     classId: {
         type: Schema.Types.ObjectId,

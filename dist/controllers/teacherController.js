@@ -17,6 +17,7 @@ const userModel_js_1 = __importDefault(require("../models/userModel.js"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const classModel_js_1 = __importDefault(require("../models/classModel.js"));
 dotenv_1.default.config();
+//צריך שיביא את הממוצע של אותה הכיתה
 //הבאת כל הציונים של המשתמשים
 const getAllGrades = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -38,47 +39,48 @@ const getAllGrades = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getAllGrades = getAllGrades;
-//ייבוא הממוצע ציונים של כל התלמידים ביחד 
+//צריך שיביא את הממוצע של אותה הכיתה
+//ייבוא הממוצע ציונים של כל התלמידים באותה כיתה 
+// הבאת ממוצע כל הציונים בכיתה
 const getAverageAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
-        // בדיקה אם המשתמש הוא מורה
-        if (((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) !== "teacher") {
+        const teacher = req.user;
+        if (teacher.role !== "teacher") {
             res.status(403).json({ message: "Forbidden: Only teachers can access this resource." });
             return;
         }
-        // שימוש ב-aggregate לשליפת ממוצע הציונים של כל התלמידים
-        const averageGrade = yield userModel_js_1.default.aggregate([
+        const avarege = yield userModel_js_1.default.aggregate([
             {
-                $match: { role: "student" } // מסנן רק את המשתמשים שהם תלמידים
-            },
-            {
-                $project: {
-                    _id: 0, // לא להציג את השדה _id
-                    grades: 1 // להציג את הציונים של התלמיד
+                $match: {
+                    role: "student",
+                    className: teacher.className
                 }
             },
             {
-                $unwind: "$grades" // הסתרת השדה grades
+                $unwind: "$grades"
             },
             {
                 $group: {
-                    _id: null, // לא להציג את השדה _id
-                    averageGrade: { $avg: "$grades.score" } // ממוצע הציונים
+                    _id: null,
+                    averageOfAll: { $avg: "$grades.score" }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    averageOfAll: 1
                 }
             }
         ]);
-        if (!averageGrade || averageGrade.length === 0) {
-            res.status(404).json({ message: "No students found" });
-            return;
-        }
-        res.status(200).json({ averageGrade: averageGrade[0].averageGrade });
+        res.status(200).json(avarege);
     }
     catch (error) {
-        res.status(500).json({ message: "Error getting average grade" });
+        console.error(error);
+        res.status(500).json({ message: "Error getting all grades" });
     }
 });
 exports.getAverageAll = getAverageAll;
+//הוספת ציון לתלמיד
 const addGrade = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
@@ -132,30 +134,7 @@ exports.addGrade = addGrade;
 // //         res.status(500).json({ message: "Error deleting grade" });
 // //     }
 // // }
-// //עדכון ציון לתלמיד
-// export const updateGrade = async (req: UserRequest, res: Response): Promise<void> => {
-//     try {
-//         // בדיקה אם המשתמש הוא מורה
-//         if (req.user?.role !== "teacher") {
-//             res.status(403).json({ message: "Forbidden: Only teachers can access this resource." });
-//             return;
-//         }
-//         // עדכון ציון לתלמיד
-//        const {password,subject, score } = req.body;
-//        if(!password || !score|| !subject) {
-//         res.status(400).json({ message: 'Missing passportId or grade' });
-//         return;
-//        }
-//        const updateGrade = await userModel.findOneAndUpdate({ passportId: password }, { $set: { grades: {subject: subject, score: score } } }, { new: true });
-//        if (!updateGrade) {
-//         res.status(404).json({ message: 'User not found' });
-//         return;
-//        }    
-//        res.status(200).json({ message: 'Grade updated successfully' });
-//     } catch (error) {
-//         res.status(500).json({ message: "Error updating grade" });
-//     }
-// }
+//עדכון ציון לתלמיד
 const updateGrade = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {

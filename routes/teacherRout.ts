@@ -1,6 +1,6 @@
 
 import express from "express";
-import { getAllUsers ,getAllGrades,getAverageAll,addGrade,updateGrade } from "../controllers/teacherController.js";
+import {  getAllGrades,getAverageAll,addGrade,updateGrade } from "../controllers/teacherController.js";
 import authenticateToken from "../middleware/auth.js"; 
 import e from "express";
 
@@ -9,16 +9,7 @@ const router = express.Router();
 
 router.use(authenticateToken); 
 
-/**
- * @swagger
- * /teacher:
- *  get:
- *       summary: get all students (teacher)
- *       responses:
- *           200:
- *               description: User registered successfully
- */
-router.route("/teacher").get(getAllUsers);
+
 
 
 /**
@@ -30,7 +21,8 @@ router.route("/teacher").get(getAllUsers);
  *           200:
  *               description: User registered successfully
  */
-router.route("/teacher/getAllGrades").get(getAllGrades);
+router.route("/teacher/getAllGrades").get(getAllGrades);//מקבל את כל הציונים של התלמידים
+
 /**
  * @swagger
  * /teacher/getAverageAll:
@@ -42,7 +34,7 @@ router.route("/teacher/getAllGrades").get(getAllGrades);
  * 
  * 
  */
-router.route("/teacher/getAverageAll").get(getAverageAll);
+router.route("/teacher/getAverageAll").get(getAverageAll);//מקבל את הממוצע של כל התלמידים
 
 /**
  * @swagger
@@ -76,7 +68,7 @@ router.route("/teacher/getAverageAll").get(getAverageAll);
  *           200:
  *               description: User registered successfully
  */
-router.route("/teacher/addGrade").post(addGrade);
+router.route("/teacher/addGrade").post(addGrade);//מוסיף ציון לתלמיד
 
 /**
  * @swagger
@@ -110,8 +102,8 @@ router.route("/teacher/addGrade").post(addGrade);
  *           200:
  *               description: User registered successfully
  */
-router.route("/teacher/updateGrade").post(updateGrade);//צריך בדיקה
-// router.route("/teacher/deleteGrade").post(deleteGrade);//צריך בדיקה
+router.route("/teacher/updateGrade").post(updateGrade);//מעדכן ציון לתלמיד
+
 
 
 

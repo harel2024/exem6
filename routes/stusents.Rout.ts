@@ -19,7 +19,7 @@ router.use(authenticateToken);
  *          
  * 
  */
-router.route("/student/grade").get(getStudentGrade);
+router.route("/student/grade").get(getStudentGrade);//הנתיב שמביא ציון לסטודנט
 
 /**
  * @swagger
@@ -32,6 +32,6 @@ router.route("/student/grade").get(getStudentGrade);
  *          
  *
  */
-router.route("/student/averageGrade").get(getStudentsAverageGrade);
+router.route("/student/averageGrade").get(getStudentsAverageGrade);//הנתיב שמביא ממוצע ציון לסטודנט{בונוס}
 
 export default router;

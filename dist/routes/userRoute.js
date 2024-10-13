@@ -58,6 +58,7 @@ router.route("/register").post(userController_js_1.createUser);
  *                              type: string
  *                          email:
  *                              type: string
+ *
  *      responses:
  *          200:
  *              description: User logged in successfully
