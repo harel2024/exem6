@@ -31,6 +31,17 @@ router.route("/teacher").get(getAllUsers);
  *               description: User registered successfully
  */
 router.route("/teacher/getAllGrades").get(getAllGrades);
+/**
+ * @swagger
+ * /teacher/getAverageAll:
+ *  get:
+ *       summary: get all students average grade(teacher)
+ *       responses:
+ *           200:
+ *               description: User registered successfully
+ * 
+ * 
+ */
 router.route("/teacher/getAverageAll").get(getAverageAll);
 
 /**
@@ -66,6 +77,39 @@ router.route("/teacher/getAverageAll").get(getAverageAll);
  *               description: User registered successfully
  */
 router.route("/teacher/addGrade").post(addGrade);
+
+/**
+ * @swagger
+ * /teacher/updateGrade:
+ *  post:
+ *       summary: update grade(teacher)
+ *       requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          studentId:
+ *                              type: string
+ *                        
+ *                          subject:
+ *                              type: string
+ *                          score:
+ *                              type: number
+ *                          comment:
+ *                              type: string
+ *          example:
+ *              studentId: "123"
+ *              grade: "10"
+ *              subject: "math"
+ *              score: "10"
+ *              comment: "good"
+ * 
+ *       responses:
+ *           200:
+ *               description: User registered successfully
+ */
 router.route("/teacher/updateGrade").post(updateGrade);//צריך בדיקה
 // router.route("/teacher/deleteGrade").post(deleteGrade);//צריך בדיקה
 

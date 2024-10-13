@@ -2,6 +2,8 @@ import userModel from "../models/userModel.js";
 import { Request, Response } from "express";
 import dotenv from "dotenv";
 import classModel from "../models/classModel.js";
+import { ObjectId } from "mongoose";
+import mongoose from "mongoose";
 
 import { UserRequest } from '../middleware/auth.js'; 
 
@@ -77,7 +79,6 @@ export const getAverageAll = async (req: UserRequest, res: Response): Promise<vo
 
 
 
-//הוספת ציון לתלמיד
 export const addGrade = async (req: UserRequest, res: Response): Promise<void> => {
     try {
         // בדיקה אם המשתמש הוא מורה
@@ -87,29 +88,64 @@ export const addGrade = async (req: UserRequest, res: Response): Promise<void> =
         }
 
         // הוספת ציון לתלמיד
-       const {studentId,subject, score,comment } = req.body;
-     
-       if(!studentId || !score|| !subject) {
-        res.status(400).json({ message: 'Missing student Id or grade' });
-        return;
-       }
+        const { studentId, subject, score, comment } = req.body;
 
-       const updateGrade = await userModel.findOneAndUpdate({ studentId: studentId }, { $push: { grades: {subject: subject, score: score ,Comment: comment} } }, { new: true });
+        // בדיקה אם יש את כל הנתונים הנדרשים
+        if (!studentId || !subject || !score) {
+            res.status(400).json({ message: 'Missing student Id, subject, or grade' });
+            return;
+        }
 
-       if (!updateGrade) {
-        res.status(404).json({ message: 'User not found' });
-        return;
-       }
+              // עדכון הציון לתלמיד
+        const updateGrade = await userModel.findOneAndUpdate(
+            { _id: studentId },  // חיפוש לפי _id
+            { $push: { grades: { subject, score, Comment: comment } } },  // הוספת הציון
+            { new: true }
+        );
 
-       res.status(200).json({ message: 'Grade added successfully' });
+        if (!updateGrade) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        res.status(200).json({ message: 'Grade added successfully', updatedUser: updateGrade });
     } catch (error) {
-        res.status(500).json({ message: "Error adding grade" });
-    }
-}
+        res.status(500).json({ message: "Error adding grade" });
+    }
+};
 
 
+// // export const deleteGrade = async (req: UserRequest, res: Response): Promise<void> => {
+// //     try {
+// //         // בדיקה אם המשתמש הוא מורה
+// //         if (req.user?.role !== "teacher") {
+// //             res.status(403).json({ message: "Forbidden: Only teachers can access this resource." });
+// //             return;
+// //         }
 
-// export const deleteGrade = async (req: UserRequest, res: Response): Promise<void> => {
+// //         // מחיקת ציון לתלמיד
+// //        const {password,subject } = req.body;
+// //        if(!password || !subject) {
+// //         res.status(400).json({ message: 'Missing passportId or grade' });
+// //         return;
+// //        }
+
+// //        const updateGrade = await userModel.findOneAndUpdate({ passportId: password }, { $pull: { grades: {subject: subject } } }, { new: true });
+
+// //        if (!updateGrade) {
+// //         res.status(404).json({ message: 'User not found' });
+// //         return;
+// //        }
+
+// //        res.status(200).json({ message: 'Grade deleted successfully' });
+// //     } catch (error) {
+// //         res.status(500).json({ message: "Error deleting grade" });
+// //     }
+// // }
+
+
+// //עדכון ציון לתלמיד
+// export const updateGrade = async (req: UserRequest, res: Response): Promise<void> => {
 //     try {
 //         // בדיקה אם המשתמש הוא מורה
 //         if (req.user?.role !== "teacher") {
@@ -117,29 +153,26 @@ export const addGrade = async (req: UserRequest, res: Response): Promise<void> =
 //             return;
 //         }
 
-//         // מחיקת ציון לתלמיד
-//        const {password,subject } = req.body;
-//        if(!password || !subject) {
+//         // עדכון ציון לתלמיד
+//        const {password,subject, score } = req.body;
+//        if(!password || !score|| !subject) {
 //         res.status(400).json({ message: 'Missing passportId or grade' });
 //         return;
 //        }
 
-//        const updateGrade = await userModel.findOneAndUpdate({ passportId: password }, { $pull: { grades: {subject: subject } } }, { new: true });
+//        const updateGrade = await userModel.findOneAndUpdate({ passportId: password }, { $set: { grades: {subject: subject, score: score } } }, { new: true });
 
 //        if (!updateGrade) {
 //         res.status(404).json({ message: 'User not found' });
 //         return;
-//        }
+//        }    
 
-//        res.status(200).json({ message: 'Grade deleted successfully' });
+//        res.status(200).json({ message: 'Grade updated successfully' });
 //     } catch (error) {
-//         res.status(500).json({ message: "Error deleting grade" });
+//         res.status(500).json({ message: "Error updating grade" });
 //     }
 // }
-
-
-//עדכון ציון לתלמיד
-export const updateGrade = async (req: UserRequest, res: Response): Promise<void> => {
+export  const updateGrade = async (req: UserRequest, res: Response): Promise<void> => {
     try {
         // בדיקה אם המשתמש הוא מורה
         if (req.user?.role !== "teacher") {
@@ -148,20 +181,20 @@ export const updateGrade = async (req: UserRequest, res: Response): Promise<void
         }
 
         // עדכון ציון לתלמיד
-       const {password,subject, score } = req.body;
-       if(!password || !score|| !subject) {
-        res.status(400).json({ message: 'Missing passportId or grade' });
-        return;
-       }
+        const { studentId, subject, score, comment } = req.body;
+        if (!studentId || !score || !subject) {
+            res.status(400).json({ message: 'Missing student Id or grade' });
+            return;
+        }
 
-       const updateGrade = await userModel.findOneAndUpdate({ passportId: password }, { $set: { grades: {subject: subject, score: score } } }, { new: true });
+        const updateGrade = await userModel.findOneAndUpdate({ _id: studentId }, { $set: { grades: { subject: subject, score: score, comment: comment } } }, { new: true });
 
-       if (!updateGrade) {
-        res.status(404).json({ message: 'User not found' });
-        return;
-       }    
+        if (!updateGrade) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
 
-       res.status(200).json({ message: 'Grade updated successfully' });
+        res.status(200).json({ message: 'Grade updated successfully' });
     } catch (error) {
         res.status(500).json({ message: "Error updating grade" });
     }
