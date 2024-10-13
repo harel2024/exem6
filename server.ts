@@ -5,6 +5,9 @@ import dotenv from "dotenv";
 import cookieParser from 'cookie-parser';
 import swaggerUI from 'swagger-ui-express';
 import {swaggerSpec} from './swagger.js';
+import teachrRouter from "./routes/teacherRout.js";
+import studentRouter from "./routes/stusents.Rout.js";
+
 
 
 
@@ -20,7 +23,7 @@ app.use(cookieParser());
 
 
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
-app.use("/", userRouter);
+app.use("/", userRouter,teachrRouter,studentRouter);
 
 
 

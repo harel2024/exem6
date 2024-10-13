@@ -2,15 +2,19 @@ import mongoose, { Document, Schema } from "mongoose";
 
 interface IGrade {
     subject: string;  
-    score: number;   
+    score: number; 
+    Comment: string;  
 }
 
 export interface IUser extends Document {
     name: string;
-    passportId: string;
+    email: string;
     password: string;
     grades?: IGrade[];  
     role: "teacher" | "student";
+    classId?: Schema.Types.ObjectId;
+    className?: string;
+    
 }
 
 const userSchema: Schema = new mongoose.Schema({
@@ -18,11 +22,11 @@ const userSchema: Schema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    passportId: {
+    email: {
         type: String,
-        required: [true, "Please provide your passportId"],
+        required: [true, "Please provide your email"],
         unique: true, 
-        match: [/^[0-9]{9}$/, "passportId must be  9 digits"]
+        match: [/[a-z0-9]+@[a-z]+\.[a-z]{2,3}/, "Please provide a valid email"],
     },
     password: {
         type: String,
@@ -40,13 +44,21 @@ const userSchema: Schema = new mongoose.Schema({
                 type: Number,
                 required: [true, "Please provide score"],
             },
+            Comment:{
+                type: String,
+                required: [true, "Please provide Comment"],
+            }
         }],
-        default: [],
+       
     },
     role: {
         type: String,
         enum: ["teacher", "student"],
         required: true, 
+    },
+    classId: {
+        type: Schema.Types.ObjectId,
+        ref: "Class",
     },
 });
 

@@ -5,57 +5,11 @@ import dotenv from "dotenv";
 import { IUser } from '../models/userModel.js'; 
 import { UserRequest } from '../middleware/auth.js'; 
 
-dotenv.config(); 
+dotenv.config();
 
 
 
-
-// יצירת יוזר חדש
-export const createUser = async (req: Request, res: Response) => {
-    console.log("ddd");
-    try {
-        const user = req.body;
-        const newUser = await userModel.create(user);
-        res.status(201).json(newUser);
-    } catch (error:any) {
-        res.status(409).json({ message: error.message });
-    }
-}
-
-// לוגין של יוזר
-export const login = async (req: Request, res: Response): Promise<void> => {
-    const { email, password } = req.body;
-
-    try {
-        const user = await userModel.findOne({ password });
-
-        if (!user || user.password !== password) {
-            res.status(401).json({ message: 'Invalid credentials' });
-            return; 
-        }
-
-        const token = jwt.sign(
-            { id: user._id, role: user.role },
-            process.env.JWT_SECRET!,
-            { expiresIn: '1h' }
-        );
-
-        // שים את הטוקן בקוקי
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', 
-            maxAge: 3600000, 
-        });
-
-        res.status(200).json({ message: 'Login successful' });
-    } catch (error) {
-        res.status(500).json({ message: "Error logging in" });
-    }
-}
-
-
-
-
+// מחזיר את הציון של המשתמש
 export const getStudentGrade = async (req: UserRequest, res: Response): Promise<void> => {
     try {
         // מחפש את המשתמש על פי תעודת הזהות (passportId)
@@ -87,7 +41,7 @@ export const getStudentGrade = async (req: UserRequest, res: Response): Promise<
 export const getStudentsAverageGrade = async (req: UserRequest, res: Response): Promise<void> => {
     try {
         // מחפש את המשתמש על פי תעודת הזהות (passportId)
-        const user = await userModel.findOne({ passportId: req.user?.email });
+        const user = await userModel.findOne({ password: req.user?.password });
 
         // אם לא נמצא משתמש
         if (!user) {
@@ -109,16 +63,3 @@ export const getStudentsAverageGrade = async (req: UserRequest, res: Response): 
         res.status(500).json({ message: "Error getting average grade" });
     }
 }
-
-
-
-    
-
-
-        
-      
-       
-
-
-
-

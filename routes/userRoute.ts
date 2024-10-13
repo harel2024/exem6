@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllUsers, createUser, login, getStudentGrade, getStudentsAverageGrade,getAllGrades,getAverageAll,addGrade,deleteGrade,updateGrade } from "../controllers/userController.js";
+import { createUser, login, getStudentGrade, getStudentsAverageGrade } from "../controllers/userController.js";
 import authenticateToken from "../middleware/auth.js"; 
 
 const router = express.Router();
@@ -65,40 +65,8 @@ router.route("/register").post(createUser);
 router.route("/login").post(login);
 
 
-router.use(authenticateToken); 
-
-/**
- * @swagger
- * /student/grade:
- *  get:
- *       summary: Register a new user
- *       responses:
- *           200:
- *               description: User registered successfully
- *          
- * 
- */
-router.route("/student/grade").get(getStudentGrade);
-
-/**
- * @swagger
- * /student/averageGrade:
- *  get:
- *       summary: Register a new user
- *       responses:
- *           200:
- *               description: User registered successfully
- *          
- *
- */
-router.route("/student/averageGrade").get(getStudentsAverageGrade);
 
 
-router.route("/teacher").get(getAllUsers);
-router.route("/teacher/getAllGrades").get(getAllGrades);
-router.route("/teacher/getAverageAll").get(getAverageAll);
-router.route("/teacher/addGrade").post(addGrade);
-router.route("/teacher/updateGrade").post(updateGrade);//צריך בדיקה
-router.route("/teacher/deleteGrade").post(deleteGrade);//צריך בדיקה
+
 
 export default router;

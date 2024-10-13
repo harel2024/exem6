@@ -1,7 +1,11 @@
-import express from "express";
-import { getAllUsers, createUser, login, getStudentGrade, getStudentsAverageGrade, getAllGrades, getAverageAll, addGrade, deleteGrade, updateGrade } from "../controllers/userController.js";
-import authenticateToken from "../middleware/auth.js";
-const router = express.Router();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const userController_js_1 = require("../controllers/userController.js");
+const router = express_1.default.Router();
 /**
  * @swagger
  * /register:
@@ -33,7 +37,7 @@ const router = express.Router();
  *          200:
  *              description: User created successfully
  */
-router.route("/register").post(createUser);
+router.route("/register").post(userController_js_1.createUser);
 /**
  * @swagger
  * /login:
@@ -57,36 +61,5 @@ router.route("/register").post(createUser);
  *              description: Bad request
  *
  */
-router.route("/login").post(login);
-router.use(authenticateToken);
-/**
- * @swagger
- * /student/grade:
- *  get:
- *       summary: Register a new user
- *       responses:
- *           200:
- *               description: User registered successfully
- *
- *
- */
-router.route("/student/grade").get(getStudentGrade);
-/**
- * @swagger
- * /student/averageGrade:
- *  get:
- *       summary: Register a new user
- *       responses:
- *           200:
- *               description: User registered successfully
- *
- *
- */
-router.route("/student/averageGrade").get(getStudentsAverageGrade);
-router.route("/teacher").get(getAllUsers);
-router.route("/teacher/getAllGrades").get(getAllGrades);
-router.route("/teacher/getAverageAll").get(getAverageAll);
-router.route("/teacher/addGrade").post(addGrade);
-router.route("/teacher/updateGrade").post(updateGrade); //צריך בדיקה
-router.route("/teacher/deleteGrade").post(deleteGrade); //צריך בדיקה
-export default router;
+router.route("/login").post(userController_js_1.login);
+exports.default = router;
