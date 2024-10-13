@@ -21,6 +21,9 @@ const classSchema: Schema = new mongoose.Schema({
 })
 
 
+export default mongoose.model<IClass>("Class", classSchema);
+
+
  
 
 

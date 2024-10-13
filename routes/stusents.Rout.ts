@@ -1,6 +1,6 @@
 
 import express from "express";
-import {  createUser, login, getStudentGrade, getStudentsAverageGrade, } from "../controllers/userController.js";
+import { getStudentGrade, getStudentsAverageGrade } from "../controllers/studentController.js";
 import authenticateToken from "../middleware/auth.js"; 
 
 
